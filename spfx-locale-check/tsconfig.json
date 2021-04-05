@@ -5,8 +5,9 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipDefaultLibCheck": true,
+    "declaration": true,
     "skipLibCheck": true,
-		"outDir": "out",
+		"outDir": "lib",
 		"lib": [
 			"es6"
 		],
