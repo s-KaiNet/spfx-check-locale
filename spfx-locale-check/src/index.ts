@@ -1,23 +1,27 @@
-import fg from 'fast-glob';
+import glob from 'fast-glob';
 import * as path from 'path';
 import { Compiler } from './common/Compiler';
 
-import { DefaultLocFolderName, DefaultProjectSearchPattern } from './common/consts';
+import { DefaultProjectSearchPattern } from './common/consts';
+import { Options } from './common/Options';
+import { outputErrors } from './common/Utils';
 
 import { DiagnosticData } from './model/DiagnosticData';
 
-export async function checkForErrors(rootPath: string, searchFolders?: string[]): Promise<DiagnosticData[]> {
+export async function checkForErrors(options: Options): Promise<DiagnosticData[]> {
   const patterns: string[] = [];
+  options = {
+    printErrors: false,
+    definitionSearchPatterns: [DefaultProjectSearchPattern],
+    ...options
+  };
+  const { definitionSearchPatterns: searchPatterns, rootPath, printErrors } = options;
 
-  if (!searchFolders) {
-    patterns.push(DefaultProjectSearchPattern.replace('{folder}', DefaultLocFolderName));
-  } else {
-    for (const folder of searchFolders) {
-      patterns.push(DefaultProjectSearchPattern.replace('{folder}', folder))
-    }
+  for (const pattern of searchPatterns) {
+    patterns.push(pattern);
   }
 
-  const locDefinitionEntries = await fg(patterns, {
+  const locDefinitionEntries = await glob(patterns, {
     absolute: true,
     objectMode: true,
     onlyFiles: true,
@@ -37,10 +41,15 @@ export async function checkForErrors(rootPath: string, searchFolders?: string[])
     results.push({
       errors: compileErrors,
       rootFolder: path.dirname(locDefinitionEntry.path)
-    })
+    });
+  }
+
+  if (printErrors) {
+    await outputErrors(results);
   }
 
   return results;
 }
 
 export * from './model';
+export * from './common/Options';

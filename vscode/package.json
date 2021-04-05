@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "workspaceContains:.yo-rc.json",
+    "workspaceContains:package.json"
   ],
   "main": "./lib/extension.js",
   "scripts": {

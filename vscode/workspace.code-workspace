@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\spfx-locale-check"
+		}
+	],
+  "settings": {
+    "typescript.tsc.autoDetect": "off"
+  }
+}

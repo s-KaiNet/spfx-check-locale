@@ -72,7 +72,7 @@ export class Compiler {
         message,
         start: start,
         end: end
-      })
+      });
     }
 
     return result;
@@ -90,9 +90,9 @@ export class Compiler {
       noEmitOnError: true,
       skipDefaultLibCheck: true,
       skipLibCheck: true
-    }
+    };
 
-    const host = createVirtualCompilerHost(system, opts, ts)
+    const host = createVirtualCompilerHost(system, opts, ts);
 
     const program = ts.createProgram({
       rootNames: [...fsMap.keys()],

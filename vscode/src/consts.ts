@@ -1,0 +1,1 @@
+export const ExtensionName = 'spfx-check-locale';
