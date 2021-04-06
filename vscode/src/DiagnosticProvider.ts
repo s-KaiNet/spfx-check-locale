@@ -1,4 +1,4 @@
-import { DiagnosticData } from 'spfx-locale-check';
+import { DiagnosticData } from 'spfx-check-locale';
 import * as vs from 'vscode';
 import * as path from 'path';
 import { createKeyFromPath } from './Utils';

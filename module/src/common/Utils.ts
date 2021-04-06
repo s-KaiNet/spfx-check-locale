@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 import { codeFrameColumns, SourceLocation } from '@babel/code-frame';
+import chalk from 'chalk';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -14,19 +16,18 @@ export async function outputErrors(data: DiagnosticData[]): Promise<void> {
       const errors = diagnostic.errors[fileName];
       for (const error of errors) {                  // each error in the file inside the "project"
         const location: SourceLocation = {
-          start: { line: error.start.line, column: error.start.character },
-          end: { line: error.end.line, column: error.end.character }
+          start: { line: error.start.line + 1, column: error.start.character },
+          end: { line: error.end.line + 1, column: error.end.character }
         };
 
         const filePath = path.join(diagnostic.rootFolder, fileName);
         const fileContent = (await fs.promises.readFile(filePath)).toString();
         const result = codeFrameColumns(fileContent, location, {
-          message: error.message
+          message: error.message,
+          highlightCode: true
         });
 
-        // TODO - print file path
-
-        // eslint-disable-next-line no-console
+        console.log(chalk.red('ERROR in ') + chalk.cyan(path.join(diagnostic.rootFolder, fileName) + chalk.red(':')));
         console.log(result);
       }
     }
