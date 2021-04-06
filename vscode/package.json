@@ -10,9 +10,22 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:.yo-rc.json",
-    "workspaceContains:package.json"
+    "workspaceContains:gulpfile.js"
   ],
+  "contributes": {
+    "configuration": {
+      "title": "SPFx Check Locale",
+      "properties": {
+        "spfx-check-locale.definition.search.patterns": {
+          "default": [
+            "src/**/loc/*.d.ts"
+          ],
+          "type": "array",
+          "description": "Contains patterns to search your locale definition files (strings.d.ts). You can override the default one or add another if you use a folder with a different names for your localization files."
+        }
+      }
+    }
+  },
   "main": "./lib/extension.js",
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -35,7 +48,6 @@
   },
   "dependencies": {
     "@typescript/vfs": "1.3.4",
-    "fast-glob": "3.2.5",
     "typescript": "4.2.3"
   }
 }

@@ -1,6 +1,7 @@
 import { DiagnosticData } from 'spfx-locale-check';
 import * as vs from 'vscode';
 import * as path from 'path';
+import { createKeyFromPath } from './Utils';
 
 export class DiagnosticProvider {
   private diagnosticsMap: { [key: string]: vs.DiagnosticCollection } = {};
@@ -47,8 +48,8 @@ export class DiagnosticProvider {
   }
 
   private ensureDiagnosticCollection(folderPath: string): vs.DiagnosticCollection {
-    folderPath = folderPath.replace(/[/\\]/gi, '|');
-    
+    folderPath = createKeyFromPath(folderPath);
+
     if (!this.diagnosticsMap[folderPath]) {
       this.diagnosticsMap[folderPath] = vs.languages.createDiagnosticCollection();
     }

@@ -1,6 +1,6 @@
 {
-  "name": "spfx-locale-check",
-  "version": "1.0.0",
+  "name": "spfx-check-locale",
+  "version": "0.0.1",
   "description": "Dynamically checks the consistency of your localization files, i.e. localization files match \"mystrings.d.ts\" schema.",
   "main": "lib/index.js",
   "scripts": {

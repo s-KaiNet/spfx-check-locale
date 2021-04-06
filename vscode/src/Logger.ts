@@ -1,22 +1,24 @@
 import * as vs from 'vscode';
-import { ExtensionName } from './consts';
+import { ExtensionDisplayName } from './consts';
 
-class Logger {
+class Logger implements vs.Disposable {
 
   private outputChannel: vs.OutputChannel;
 
   private get channel() {
     if (!this.outputChannel) {
-      this.outputChannel = vs.window.createOutputChannel(ExtensionName);
+      this.outputChannel = vs.window.createOutputChannel(ExtensionDisplayName);
     }
 
     return this.outputChannel;
   }
 
-  constructor(private context: vs.ExtensionContext) {
-    context.subscriptions.push(this.channel)
+  dispose() {
+    if (this.outputChannel) {
+      this.outputChannel.dispose();
+      this.outputChannel = null;
+    }
   }
-
 
   public log(message: string) {
     this.format(message);
@@ -49,11 +51,9 @@ class Logger {
     this.format('******');
   }
 
-  public format(message: string) {
+  private format(message: string) {
     this.channel.appendLine(`[${new Date().toLocaleString()}] ${message}`);
   }
 }
 
-export function createLogger(context: vs.ExtensionContext) {
-  return new Logger(context);
-}
+export const logger = new Logger();

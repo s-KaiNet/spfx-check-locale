@@ -24,6 +24,8 @@ export async function outputErrors(data: DiagnosticData[]): Promise<void> {
           message: error.message
         });
 
+        // TODO - print file path
+
         // eslint-disable-next-line no-console
         console.log(result);
       }

@@ -5,10 +5,10 @@ import { Compiler } from './common/Compiler';
 import { DefaultProjectSearchPattern } from './common/consts';
 import { Options } from './common/Options';
 import { outputErrors } from './common/Utils';
-
+import { CheckResults } from './model/CheckResults';
 import { DiagnosticData } from './model/DiagnosticData';
 
-export async function checkForErrors(options: Options): Promise<DiagnosticData[]> {
+export async function checkForErrors(options: Options): Promise<CheckResults> {
   const patterns: string[] = [];
   options = {
     printErrors: false,
@@ -28,28 +28,38 @@ export async function checkForErrors(options: Options): Promise<DiagnosticData[]
     cwd: rootPath
   });
 
-  const results: DiagnosticData[] = [];
+  const diagnosticData: DiagnosticData[] = [];
 
   for (const locDefinitionEntry of locDefinitionEntries) {
     const compiler = new Compiler(locDefinitionEntry.path);
     const compileErrors = await compiler.compile();
+    let totalErrors = 0;
 
+    for (const fileName in compileErrors) {
+      totalErrors += compileErrors[fileName].length;
+    }
+    
     if (!compileErrors) {
       continue;
     }
 
-    results.push({
+    diagnosticData.push({
       errors: compileErrors,
+      totalErrors,
       rootFolder: path.dirname(locDefinitionEntry.path)
     });
   }
 
   if (printErrors) {
-    await outputErrors(results);
+    await outputErrors(diagnosticData);
   }
 
-  return results;
+  return {
+    diagnosticData: diagnosticData,
+    locFolders: locDefinitionEntries.map(f => path.dirname(f.path))
+  };
 }
 
 export * from './model';
 export * from './common/Options';
+export { DefaultProjectSearchPattern } from './common/consts';

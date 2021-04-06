@@ -1,47 +1,89 @@
 import * as vs from 'vscode';
 import * as path from 'path';
-import { checkForErrors } from 'spfx-locale-check';
+import { checkForErrors } from 'spfx-check-locale';
 
-import { createLogger } from './Logger';
+import { logger } from './Logger';
 import { DiagnosticProvider } from './DiagnosticProvider';
+import { createKeyFromPath, getSettings, logError, shouldRun } from './Utils';
 
 export async function activate(context: vs.ExtensionContext) {
-  const logger = createLogger(context);
-
   try {
-    /*
-    const yoContent = (await fs.promises.readFile('.yo-rc.json')).toString();
-
-    if (yoContent.indexOf('@microsoft/generator-sharepoint') === -1) {
+    if (!vs.workspace.workspaceFolders || vs.workspace.workspaceFolders.length === 0) {
+      logger.error('Unable to resolve WorkspaceFolder');
       return;
-    }
-*/
-    if (!vs.workspace.workspaceFolders) {
-      throw new Error('Unable to resolve workspace folder');
     }
 
     const rootWorkspace = vs.workspace.workspaceFolders[0];
-    const errors = await checkForErrors({
-      rootPath: rootWorkspace.uri.fsPath
+    if (!(await shouldRun(rootWorkspace.uri.fsPath))) {
+      return;
+    }
+
+    logger.log('Starting the extension');
+    const start = new Date().getTime();
+    const settings = getSettings();
+
+    const { diagnosticData, locFolders } = await checkForErrors({
+      rootPath: rootWorkspace.uri.fsPath,
+      definitionSearchPatterns: settings.searchPatterns
     });
 
-    DiagnosticProvider.instance.applyDiagnostics(errors);
+    const end = new Date().getTime() - start;
 
-    // TODO - check that file is in /loc folder
+    let totalErrors = 0;
+
+    for (const data of diagnosticData) {
+      totalErrors += data.totalErrors;
+    }
+
+    logger.log(`Found ${locFolders.length} locale folders`);
+    logger.log(`Found ${totalErrors} error(s) in solution. Elapsed: ${end}ms`);
+
+    const locFolderKeys = locFolders.map(f => createKeyFromPath(f));
+
+    DiagnosticProvider.instance.applyDiagnostics(diagnosticData);
+
     context.subscriptions.push(vs.workspace.onDidSaveTextDocument(async (doc) => {
-      const folderPath = path.dirname(doc.uri.fsPath);
-      const errors = await checkForErrors({
-        rootPath: folderPath,
-        definitionSearchPatterns: ['*.d.ts']
-      });
+      try {
+        if (!doc.uri.fsPath.endsWith('.d.ts') && !doc.uri.fsPath.endsWith('.js')) {
+          return;
+        }
 
-      DiagnosticProvider.instance.clearDiagnostics(folderPath);
-      DiagnosticProvider.instance.applyDiagnostics(errors);
+        const folderPath = path.dirname(doc.uri.fsPath);
+        const folderPathKey = createKeyFromPath(folderPath);
+
+        // if file is not in observed loc folders, return
+        if (locFolderKeys.indexOf(folderPathKey) === -1) {
+          return;
+        }
+        const start = new Date().getTime();
+        logger.log(`Checking for errors a folder with path: '${folderPath}'`);
+
+        const { diagnosticData } = await checkForErrors({
+          rootPath: folderPath,
+          definitionSearchPatterns: ['*.d.ts']
+        });
+
+        DiagnosticProvider.instance.clearDiagnostics(folderPath);
+        DiagnosticProvider.instance.applyDiagnostics(diagnosticData);
+        const end = new Date().getTime() - start;
+
+        let totalErrors = 0;
+        for (const data of diagnosticData) {
+          totalErrors += data.totalErrors;
+        }
+        
+        logger.log(`Found ${totalErrors} error(s). Elapsed: ${end}ms`);
+      }
+      catch (e) {
+        logError(e);
+        throw e;
+      }
     }));
+
+    context.subscriptions.push(logger);
   }
   catch (e) {
-    logger.error(e);
-    vs.window.showErrorMessage('Error: ' + e?.message || e.toString());
+    logError(e);
     throw e;
   }
 }
@@ -50,10 +92,3 @@ export async function activate(context: vs.ExtensionContext) {
 export function deactivate() {
   //
 }
-
-/*
-async function shouldRun(): Promise<bool> {
-  const hasYo = await fs.promises.stat()
-}
-
-*/

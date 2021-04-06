@@ -2,9 +2,9 @@ import fg from 'fast-glob';
 import * as fs from 'fs';
 import * as ts from 'typescript';
 import * as path from 'path';
+import { createDefaultMapFromNodeModules, createSystem, createVirtualCompilerHost } from '@typescript/vfs';
 
 import { FileData } from '../model/FileData';
-import { createDefaultMapFromNodeModules, createSystem, createVirtualCompilerHost } from '@typescript/vfs';
 import { GlobalDefinition } from './consts';
 import { ErrorData } from '../model/ErrorData';
 
