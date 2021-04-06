@@ -27,7 +27,9 @@ export async function outputErrors(data: DiagnosticData[]): Promise<void> {
           highlightCode: true
         });
 
-        console.log(chalk.red('ERROR in ') + chalk.cyan(path.join(diagnostic.rootFolder, fileName) + chalk.red(':')));
+        console.log('');
+        console.log(chalk.red.bold('ERROR in ') + chalk.cyan(path.join(diagnostic.rootFolder, fileName) + chalk.red.bold(':')));
+        console.log('');
         console.log(result);
       }
     }

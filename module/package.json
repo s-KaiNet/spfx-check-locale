@@ -1,16 +1,28 @@
 {
   "name": "spfx-check-locale",
   "version": "0.0.1",
-  "description": "Dynamically checks the consistency of your localization files, i.e. localization files match \"mystrings.d.ts\" schema.",
+  "description": "Dynamically checks the consistency of your localization files inside SharePoint Framework projects, i.e. localization files match the schema inside \"mystrings.d.ts\".",
   "main": "lib/index.js",
+  "types": "./lib/index.d.ts",
+  "keywords": [
+    "sharepoint-framework",
+    "spfx",
+    "nodejs",
+    "vscode",
+    "webpack"
+  ],
+  "bugs": {
+    "url": "https://github.com/s-KaiNet/spfx-check-locale/issues"
+  },
+  "homepage": "https://github.com/s-KaiNet/spfx-check-locale",
   "scripts": {
     "dev": "tsc -watch -p tsconfig.json",
     "lint": "eslint -c .eslintrc.json --ext .ts src",
     "prepublishOnly": "rimraf -- lib && npm run build",
     "build": "npm run lint && tsc -p ."
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Sergei Sergeev <sergeev.srg@gmail.com> (https://github.com/s-KaiNet)",
+  "license": "MIT",
   "dependencies": {
     "@babel/code-frame": "7.12.11",
     "@types/babel__code-frame": "7.0.2",

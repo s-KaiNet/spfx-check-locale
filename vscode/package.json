@@ -1,7 +1,7 @@
 {
   "name": "spfx-check-locale",
   "displayName": "SPFx Check Locale",
-  "description": "Dynamically checks the consistency of your localization files, i.e. localization files match \"mystrings.d.ts\" schema.",
+  "description": "Dynamically checks the consistency of your localization files inside SharePoint Framework projects, i.e. localization files match the schema inside \"mystrings.d.ts\" .",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.55.0"
@@ -45,5 +45,8 @@
     "glob": "^7.1.6",
     "mocha": "^8.2.1",
     "vscode-test": "^1.5.0"
+  },
+  "dependencies": {
+    "spfx-check-locale": "^0.0.1"
   }
 }
