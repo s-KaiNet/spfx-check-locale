@@ -21,6 +21,7 @@
     "type": "git"
   },
   "publisher": "s-kainet",
+  "icon": "assets/icon128.png",
   "activationEvents": [
     "workspaceContains:./config/package-solution.json"
   ],
