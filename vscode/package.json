@@ -2,7 +2,7 @@
   "name": "spfx-check-locale",
   "displayName": "SPFx Check Locale",
   "description": "Dynamically checks the consistency of your localization files inside SharePoint Framework projects, i.e. localization files match the schema inside \"mystrings.d.ts\" .",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "license": "MIT",
   "keywords": [
     "SharePoint Framework",
@@ -31,7 +31,7 @@
     "compile": "npm run lint && tsc -p ./",
     "dev": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts"
+    "lint": "eslint -c .eslintrc.json --ext .ts src"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
@@ -46,6 +46,7 @@
     "vscode-test": "^1.5.0"
   },
   "dependencies": {
-    "spfx-check-locale": "^0.0.3"
+    "spfx-check-locale": "^0.0.3",
+    "typescript": "^4.2.4"
   }
 }
