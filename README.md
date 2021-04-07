@@ -1,70 +1,58 @@
-# spfx-check-locale README
+# Checks that your localization files match the schema inside `mystrings.d.ts`
 
-This is the README for your extension "spfx-check-locale". After writing up a brief description, we recommend including the following sections.
+[![npm version](https://badge.fury.io/js/spfx-check-locale.svg)](https://badge.fury.io/js/node-sp-auth)
 
-## Features
+`spfx-check-locale` is a Node.js module which allows you to check the consistency of your localization files inside SharePoint Framework projects, i.e. localization files match the schema inside `mystrings.d.ts`.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Also available as a [VSCode extension](https://github.com/s-KaiNet/spfx-check-locale/blob/master/vscode/README.md) to support nice real-time error reporting.
 
-For example if there is an image subfolder under your extension project workspace:
+## How to use
 
-\!\[feature X\]\(images/feature-x.png\)
+### Install
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+`npm install spfx-check-locale --save-dev`
 
-## Requirements
+### Update `gulpfile.js`
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+```javascript
+const checkLocales = require('spfx-check-locale').checkForErrors;
 
-## Extension Settings
+const argv = build.rig.getYargs().argv;
+if (argv.production) {
+  const check = build.subTask('check-locales', function (gulp, buildOptions, done) {
+    checkLocales({
+      projectPath: __dirname,
+      printErrors: true
+    })
+      .then(result => {
+        if (result.diagnosticData.length === 0) {
+          done();
+        } else {
+          done('Found errors in localization files');
+        }
+      }).catch(done);
+  });
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+  build.rig.addPostBuildTask(build.task('check-locales', check));
+}
+```
 
-For example:
+Now every time you build your SPFx solution for the production `spfx-check-locale` will check the consistency of all localization files, will print errors report and will fail a build if there are any errors.  
 
-This extension contributes the following settings:
+> Why on production build only? Because the checking takes from 1 to 3 seconds, thus no reason to make your `serve` process slower. Also, with [VSCode extension](https://github.com/s-KaiNet/spfx-check-locale/blob/master/vscode/README.md) you have nice real-time error highlights without hurting performance.
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+## API
 
-## Known Issues
+### checkForErrors(options)
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Asynchronously checks your SPFx project for inconsistencies in localization files
 
-## Release Notes
+#### params
 
-Users appreciate release notes as you update your extension.
+- `options` - required, options object with below properties:
+  - `projectPath` - required string, an absolute path to your SPFx solution
+  - `printErrors` - optional boolean, whether to print errors in console
 
-### 1.0.0
+#### returns
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+A promise, which resolves to a `CheckResults` object

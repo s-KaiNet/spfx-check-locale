@@ -7,6 +7,11 @@ import { createSearchPatterns, outputErrors } from './common/Utils';
 import { CheckResults } from './model/CheckResults';
 import { DiagnosticData } from './model/DiagnosticData';
 
+/**
+ * Asynchronously checks your SPFx project for inconsistencies in localization files
+ * @param options Options to use
+ * @returns A promise, which resolves to a result object
+ */
 export async function checkForErrors(options: Options): Promise<CheckResults> {
   options = {
     printErrors: false,
@@ -56,4 +61,3 @@ export async function checkForErrors(options: Options): Promise<CheckResults> {
 
 export * from './model';
 export * from './common/Options';
-export { DefaultProjectSearchPattern } from './common/consts';

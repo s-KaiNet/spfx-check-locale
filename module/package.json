@@ -1,6 +1,6 @@
 {
   "name": "spfx-check-locale",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Dynamically checks the consistency of your localization files inside SharePoint Framework projects, i.e. localization files match the schema inside \"mystrings.d.ts\".",
   "main": "lib/index.js",
   "types": "./lib/index.d.ts",

@@ -46,7 +46,7 @@ export async function activate(context: vs.ExtensionContext) {
         const folderPath = path.dirname(doc.uri.fsPath);
         const folderPathKey = createKeyFromPath(folderPath);
 
-        // if file is not in observed loc folders, return
+        // if file is not in observed in loc folders, return
         if (locFolderKeys.indexOf(folderPathKey) === -1) {
           return;
         }
