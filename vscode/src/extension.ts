@@ -4,7 +4,7 @@ import { checkForErrors } from 'spfx-check-locale';
 
 import { logger } from './Logger';
 import { DiagnosticProvider } from './DiagnosticProvider';
-import { createKeyFromPath, getSettings, logError, shouldRun } from './Utils';
+import { createKeyFromPath, logError } from './Utils';
 
 export async function activate(context: vs.ExtensionContext) {
   try {
@@ -14,17 +14,12 @@ export async function activate(context: vs.ExtensionContext) {
     }
 
     const rootWorkspace = vs.workspace.workspaceFolders[0];
-    if (!(await shouldRun(rootWorkspace.uri.fsPath))) {
-      return;
-    }
 
     logger.log('Starting the extension');
     const start = new Date().getTime();
-    const settings = getSettings();
 
     const { diagnosticData, locFolders } = await checkForErrors({
-      rootPath: rootWorkspace.uri.fsPath,
-      definitionSearchPatterns: settings.searchPatterns
+      projectPath: rootWorkspace.uri.fsPath
     });
 
     const end = new Date().getTime() - start;
@@ -35,7 +30,7 @@ export async function activate(context: vs.ExtensionContext) {
       totalErrors += data.totalErrors;
     }
 
-    logger.log(`Found ${locFolders.length} locale folders`);
+    logger.log(`Found ${locFolders.length} locale folder(s)`);
     logger.log(`Found ${totalErrors} error(s) in solution. Elapsed: ${end}ms`);
 
     const locFolderKeys = locFolders.map(f => createKeyFromPath(f));
@@ -59,8 +54,7 @@ export async function activate(context: vs.ExtensionContext) {
         logger.log(`Checking for errors a folder with path: '${folderPath}'`);
 
         const { diagnosticData } = await checkForErrors({
-          rootPath: folderPath,
-          definitionSearchPatterns: ['*.d.ts']
+          projectPath: folderPath
         });
 
         DiagnosticProvider.instance.clearDiagnostics(folderPath);
@@ -71,7 +65,7 @@ export async function activate(context: vs.ExtensionContext) {
         for (const data of diagnosticData) {
           totalErrors += data.totalErrors;
         }
-        
+
         logger.log(`Found ${totalErrors} error(s). Elapsed: ${end}ms`);
       }
       catch (e) {

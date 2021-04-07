@@ -35,3 +35,43 @@ export async function outputErrors(data: DiagnosticData[]): Promise<void> {
     }
   }
 }
+
+export async function createSearchPatterns(projectPath: string): Promise<string[]> {
+  const configPath = path.join(projectPath, 'config/config.json');
+  
+  // if projectPath is a root SPFx project, use config.json to find all folders with localized resources
+  if (await checkFileExists(configPath)) {
+    const patterns: string[] = [];
+    const config = JSON.parse((await (await fs.promises.readFile(configPath)).toString()));
+
+    for (const res in config.localizedResources) {
+      const resourcePath: string = config.localizedResources[res];
+
+      // skip node_modules resources
+      if (!resourcePath.startsWith('lib/')) {
+        continue;
+      }
+
+      const basePath = 'src' + path.dirname(resourcePath).slice(3);
+      patterns.push(removeTrailingSlash(basePath) + '/*.d.ts');
+    }
+
+    // assume the projectPath is a path to a direct "loc" folder (used by VSCode extension)
+    return patterns;
+  }
+
+  return ['*.d.ts'];
+}
+
+export function removeTrailingSlash(input: string): string{
+  return input.replace(/\/$/, '');
+}
+
+export async function checkFileExists(filepath): Promise<boolean> {
+  try {
+    await fs.promises.access(filepath, fs.constants.F_OK);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

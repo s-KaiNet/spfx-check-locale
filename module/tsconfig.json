@@ -5,6 +5,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipDefaultLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "skipLibCheck": true,
 		"outDir": "lib",

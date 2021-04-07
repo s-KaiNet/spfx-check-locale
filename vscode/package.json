@@ -10,22 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:gulpfile.js"
+    "workspaceContains:./config/package-solution.json"
   ],
-  "contributes": {
-    "configuration": {
-      "title": "SPFx Check Locale",
-      "properties": {
-        "spfx-check-locale.definition.search.patterns": {
-          "default": [
-            "src/**/loc/*.d.ts"
-          ],
-          "type": "array",
-          "description": "Contains patterns to search your locale definition files (strings.d.ts). You can override the default one or add another if you use a folder with a different names for your localization files."
-        }
-      }
-    }
-  },
   "main": "./lib/extension.js",
   "scripts": {
     "vscode:prepublish": "npm run compile",

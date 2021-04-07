@@ -1,5 +1,4 @@
 export interface Options {
-  rootPath: string;
-  definitionSearchPatterns?: string[];
+  projectPath: string;
   printErrors?: boolean;
 }
