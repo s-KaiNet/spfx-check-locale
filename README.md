@@ -1,6 +1,6 @@
 # Checks that your localization files match the schema inside `mystrings.d.ts`
 
-[![npm version](https://badge.fury.io/js/spfx-check-locale.svg)](https://badge.fury.io/js/node-sp-auth)
+[![npm version](https://badge.fury.io/js/spfx-check-locale.svg)](https://badge.fury.io/js/spfx-check-locale)
 
 `spfx-check-locale` is a Node.js module which allows you to check the consistency of your localization files inside SharePoint Framework projects, i.e. localization files match the schema inside `mystrings.d.ts`.
 
