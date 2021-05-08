@@ -21,7 +21,7 @@ const argv = build.rig.getYargs().argv;
 if (argv.production) {
   const check = build.subTask('check-locales', function (gulp, buildOptions, done) {
     checkLocales({
-      projectPath: __dirname,
+      projectPath: buildOptions.rootPath,
       printErrors: true
     })
       .then(result => {
