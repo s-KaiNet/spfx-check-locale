@@ -57,7 +57,13 @@ export class Compiler {
       if (!diagnostic.file || diagnostic.category !== ts.DiagnosticCategory.Error) {
         continue;
       }
-      const fileName = diagnostic.file.fileName.replace('.ts', '.js');
+      let fileName = diagnostic.file.fileName;
+
+      const hasFile = filesData.filter(f => f.fileName.toLowerCase() === fileName.toLowerCase()).length !== 0;
+
+      if (!hasFile) continue;
+
+      fileName = fileName.replace('.ts', '.js');
       result[fileName] = result[fileName] || [];
 
       const start = ts.getLineAndCharacterOfPosition(diagnostic.file, diagnostic.start);
